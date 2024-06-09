@@ -1,6 +1,6 @@
 (function () {
   let nextId = 0;
-  
+
   const statusColour = {
     "Canceled": "danger",
     "Completed": "success",
@@ -20,77 +20,84 @@
 
   /*======================= CRUD FUNCTIONS =======================*/
 
-  function dbFetchJobs() {
-    fetch(`http://localhost:3000/jobs`)
-      .then(response => response.json())
-      .then(renderJobs)
-      .catch(console.error);
+  async function dbFetchJobs() {
+    await api.fetchJobs().then(
+      jobs => {
+        renderJobs(jobs);
+      },
+      error => {
+        console.error(error);
+        alertMessage('messageArea', 'A problem occurred while fetching jobs. Please try again later.', 'danger');
+      }
+    );
   }
 
-  function dbFetchJob(id) {
-    fetch(`http://localhost:3000/jobs/${id}`)
-      .then(response => response.json())
-      .then(populateJobFields)
-      .catch(console.error);
+  async function dbFetchJob(id) {
+    await api.fetchJob(id).then(
+      job => {
+        populateJobFields(job);
+      },
+      error => {
+        console.error(error);
+        alertMessage('messageArea', 'A problem occurred while fetching job. Please try again later.', 'danger');
+      }
+    );
   }
 
-  function dbAddJob(customerName, jobType, status, appointmentDate, technician) {
+  async function dbAddJob(customerName, jobType, status, appointmentDate, technician) {
     let id = `${nextId + 1}`;
 
-    fetch(`http://localhost:3000/jobs`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({
-        id,
-        customerName,
-        jobType,
-        status,
-        appointmentDate,
-        technician
-      })
-    })
-      .then(response => response.json())
-      .then(job => {
+    await api.addJob(id, customerName, jobType, status, appointmentDate, technician).then(
+      job => {
         nextId++;
         createJobCard(job.id, job.customerName, job.jobType, job.status, job.appointmentDate, job.technician);
         appendAddJobButton();
         addJobOperation();
         alertMessage('messageArea', 'Job successfully added!', 'success', 3);
-      })
-      .catch(console.error);
+      },
+      error => {
+        console.error(error);
+        alertMessage('messageArea', 'A problem occurred while adding job. Please try again later.', 'danger');
+      }
+    );
   }
 
-  function dbUpdateJob(id, customerName, jobType, status, appointmentDate, technician) {
-    fetch(`http://localhost:3000/jobs/${id}`, {
-      method: "PUT",
-      body: JSON.stringify({
-        id,
-        customerName,
-        jobType,
-        status,
-        appointmentDate,
-        technician
-      })
-    })
-      .then(response => response.json())
-      .then(job => {
+  async function dbUpdateJob(id, customerName, jobType, status, appointmentDate, technician) {
+    await api.updateJob(id, customerName, jobType, status, appointmentDate, technician).then(
+      job => {
         updateJobCard(job.id, job.customerName, job.jobType, job.status, job.appointmentDate, job.technician);
         alertMessage('messageArea', 'Job successfully updated!', 'success', 3);
-      })
-      .catch(console.error);
+      },
+      error => {
+        console.error(error);
+        alertMessage('messageArea', 'A problem occurred while updating job. Please try again later.', 'danger');
+      }
+    );
   }
 
-  function dbDeleteJob(id) {
-    fetch(`http://localhost:3000/jobs/${id}`, {
-      method: "DELETE"
-    })
-      .then(r => {
-        document.getElementById(id).remove();
-      })
-      .catch(console.error);
+  async function dbDeleteJob(id) {
+    let errorMsg = 'A problem occurred while deleting job. Please try again later.';
+
+    await api.deleteJob(id).then(
+      status => {
+        if(status) {
+          document.getElementById(id).remove();
+          addJobOperation();
+
+          let modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+          modal.hide();
+
+          alertMessage('messageArea', 'Job successfully deleted!', 'success', 3);
+        }
+        else {
+          alertMessage('deleteModalMessageArea', errorMsg, 'danger');
+        }
+      },
+      error => {
+        console.error(error);
+        alertMessage('deleteModalMessageArea', errorMsg, 'danger');
+      }
+    );
   }
 
   /*====================== HELPER FUNCTIONS ======================*/
@@ -120,7 +127,7 @@
     document.getElementById('jobType').value = job.jobType;
     document.getElementById('status').value = job.status;
     document.getElementById('technician').value = job.technician;
-    
+
     // parse date
     let date = new Date(job.appointmentDate);
     let dateTime = date.toLocaleString();
@@ -129,7 +136,7 @@
     // show delete button
     document.getElementById('deleteJobBtn').classList.remove('d-none');
     document.getElementById('deleteJobBtn').setAttribute('onclick', `showDeleteModal(event, '${job.id}', '${job.technician}', '${dateTime}');`);
-    
+
     document.getElementById('customerName').focus();
   }
 
@@ -167,7 +174,7 @@
     document.getElementById(`${id}-jobType`).innerHTML = jobType;
     document.getElementById(`${id}-technician`).innerHTML = technician;
     document.getElementById(`${id}-appointmentDate`).innerHTML = dateTime;
-    
+
     // set status and colour
     let statusEl = document.getElementById(`${id}-status`);
     statusEl.innerHTML = status;
@@ -177,7 +184,7 @@
 
   function appendAddJobButton() {
     let addBtn = document.getElementById('addJobBtn');
-    if(addBtn) {
+    if (addBtn) {
       addBtn.remove();
     }
 
@@ -195,13 +202,13 @@
 
   window.addJobOperation = () => {
     document.getElementById('jobOperation').innerHTML = "Add";
-    
+
     document.getElementById('jobId').value = "";
     document.getElementById('customerName').value = "";
     document.getElementById('jobType').value = "";
     document.getElementById('status').value = "";
     document.getElementById('technician').value = "";
-    
+
     // clear datepicker
     dtp.clear();
 
@@ -251,7 +258,7 @@
     // parse date
     let date = new Date(appointmentDate);
     let dateSplit = date.toISOString().split('.');
-    let dateTime = dateSplit[0]+'Z';
+    let dateTime = dateSplit[0] + 'Z';
 
     id > 0
       ? dbUpdateJob(id, customerName, jobType, status, dateTime, technician)
@@ -272,12 +279,6 @@
   window.deleteJob = () => {
     let id = document.getElementById('deleteModal').getAttribute('data-id');
     dbDeleteJob(id);
-
-    // reset the job form
-    addJobOperation();
-
-    let modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
-    modal.hide();
   };
 
   /*====================== DISPLAY FUNCTIONS =====================*/
@@ -306,7 +307,7 @@
     if (timer) {
       setTimeout(() => {
         document.getElementById(id).innerHTML = "<br>";
-      }, parseInt(timer)*1000);
+      }, parseInt(timer) * 1000);
     }
   }
 })();

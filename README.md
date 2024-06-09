@@ -7,19 +7,21 @@ A job management dashboard using REST.
 - Open the `index.html` file in a browser.
 
 # API Documentation
-- **dbFetchJobs()**
+Located in `src/api.js`, this file includes functions to manipulate the `db.json` file.
+- **fetchJobs()**
     - Fetches a list of all jobs.
-- **dbFetchJob()**
+- **fetchJob()**
     - Fetches a specific job.
-- **dbAddJob(customerName, jobType, status, appointmentDate, technician)**
+- **addJob(id, customerName, jobType, status, appointmentDate, technician)**
     - Add a job to the job list.
     - Parameters:
+    - id: The id number of the new job
     - customerName: Name of the customer
     - jobType: The type of job
     - status: Status of the job [Scheduled, Completed, Canceled]
     - appointmentDate: The job's scheduled date in ISO format
     - technician: The name of the technician assigned to the job
-- **dbUpdateJob(id, customerName, jobType, status, appointmentDate, technician)**
+- **updateJob(id, customerName, jobType, status, appointmentDate, technician)**
     - Add a job to the job list.
     - Parameters:
     - id: The id number of the job
@@ -28,7 +30,7 @@ A job management dashboard using REST.
     - status: Status of the job [Scheduled, Completed, Canceled]
     - appointmentDate: The job's scheduled date in ISO format
     - technician: The name of the technician assigned to the job
-- **deleteJob()**
+- **deleteJob(id)**
     - Delete a job from the job list.
     - Parameters:
     - id: The id number of the job
