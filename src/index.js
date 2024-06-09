@@ -201,11 +201,11 @@
               <input class="form-control mb-3" id="${id}-customerName" value="${customerName}" title="Customer Name" disabled>
               <label for="floatingInput">Customer Name</label>
             </div>
-            <span class="badge bg-primary" id="${id}-jobType">${jobType}</span>
-            <span class="badge bg-${statusColour[status]}" id="${id}-status">${status}</span>
+            <span class="badge bg-primary" id="${id}-jobType" title="Job Type">${jobType}</span>
+            <span class="badge bg-${statusColour[status]}" id="${id}-status" title="Status">${status}</span>
           </div>
           <div class="card-footer">
-            <small class="text-body-secondary" id="${id}-appointmentDate">${dateTime}</small>
+            <small class="text-body-secondary" id="${id}-appointmentDate" title="Appointment Date">${dateTime}</small>
           </div>
         </div>
       </div>`;
