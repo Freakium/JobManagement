@@ -7,11 +7,17 @@ A job management dashboard using REST.
 - Open the `index.html` file in a browser.
 
 # API Documentation
-Located in `src/api.js`, this file includes functions to manipulate the `db.json` file.
+Located in `src/api.js`, this file includes functions to manipulate the `db.json` file. All functions return a Promise so to handle them properly, an async function is needed.
 - **fetchJobs()**
     - Fetches a list of all jobs.
-- **fetchJob()**
+    - Returns:
+    - Promise with array of jobs as JSON objects
+- **fetchJob(id)**
     - Fetches a specific job.
+    - Parameters:
+    - id: The id number of the job
+    - Returns:
+    - Promise with job as a JSON object
 - **addJob(id, customerName, jobType, status, appointmentDate, technician)**
     - Add a job to the job list.
     - Parameters:
@@ -21,8 +27,10 @@ Located in `src/api.js`, this file includes functions to manipulate the `db.json
     - status: Status of the job [Scheduled, Completed, Canceled]
     - appointmentDate: The job's scheduled date in ISO format
     - technician: The name of the technician assigned to the job
+    - Returns:
+    - Promise with job as a JSON object
 - **updateJob(id, customerName, jobType, status, appointmentDate, technician)**
-    - Add a job to the job list.
+    - Update a job in the job list.
     - Parameters:
     - id: The id number of the job
     - customerName: Name of the customer
@@ -30,10 +38,14 @@ Located in `src/api.js`, this file includes functions to manipulate the `db.json
     - status: Status of the job [Scheduled, Completed, Canceled]
     - appointmentDate: The job's scheduled date in ISO format
     - technician: The name of the technician assigned to the job
+    - Returns:
+    - Promise with job as a JSON object
 - **deleteJob(id)**
     - Delete a job from the job list.
     - Parameters:
     - id: The id number of the job
+    - Returns:
+    - Promise with boolean status of the operation
 
 # Explanation
 I chose to use `json-server` as it is provides a lightweight and easy to use server that allows CRUD operations that saves its data to a JSON file. In other words, it is perfect for this project.

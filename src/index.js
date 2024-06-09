@@ -20,6 +20,9 @@
 
   /*======================= CRUD FUNCTIONS =======================*/
 
+  /**
+   * Call api to fetch list of jobs.
+   */
   async function dbFetchJobs() {
     await api.fetchJobs().then(
       jobs => {
@@ -32,6 +35,10 @@
     );
   }
 
+  /**
+   * Call api to fetch a single job.
+   * @param {*} id The id number of the job
+   */
   async function dbFetchJob(id) {
     await api.fetchJob(id).then(
       job => {
@@ -44,6 +51,14 @@
     );
   }
 
+  /**
+   * Call api to add a job.
+   * @param {*} customerName Name of the customer
+   * @param {*} jobType The type of job
+   * @param {*} status Status of the job [Scheduled, Completed, Canceled]
+   * @param {*} appointmentDate The job's scheduled date in ISO format
+   * @param {*} technician The name of the technician assigned to the job
+   */
   async function dbAddJob(customerName, jobType, status, appointmentDate, technician) {
     let id = `${nextId + 1}`;
 
@@ -62,6 +77,15 @@
     );
   }
 
+  /**
+   * Call api to update a job.
+   * @param {*} id The id number of the job
+   * @param {*} customerName Name of the customer
+   * @param {*} jobType The type of job
+   * @param {*} status Status of the job [Scheduled, Completed, Canceled]
+   * @param {*} appointmentDate The job's scheduled date in ISO format
+   * @param {*} technician The name of the technician assigned to the job
+   */
   async function dbUpdateJob(id, customerName, jobType, status, appointmentDate, technician) {
     await api.updateJob(id, customerName, jobType, status, appointmentDate, technician).then(
       job => {
@@ -75,12 +99,16 @@
     );
   }
 
+  /**
+   * Call api to delete a job.
+   * @param {*} id The id number of the job
+   */
   async function dbDeleteJob(id) {
     let errorMsg = 'A problem occurred while deleting job. Please try again later.';
 
     await api.deleteJob(id).then(
       status => {
-        if(status) {
+        if (status) {
           document.getElementById(id).remove();
           addJobOperation();
 
@@ -102,6 +130,10 @@
 
   /*====================== HELPER FUNCTIONS ======================*/
 
+  /**
+   * Renders all jobs as cards with an "Add Job" button appended to the end.
+   * @param {*} jobs Array of jobs as JSON objects
+   */
   function renderJobs(jobs) {
     // sort by date
     jobs.sort((a, b) => {
@@ -119,6 +151,10 @@
     appendAddJobButton();
   }
 
+  /**
+   * Fill the inputs of the form with a job's information.
+   * @param {*} job A single job JSON object
+   */
   function populateJobFields(job) {
     document.getElementById('jobOperation').innerHTML = "Update";
 
@@ -140,6 +176,15 @@
     document.getElementById('customerName').focus();
   }
 
+  /**
+   * Adds a single job card to the job list.
+   * @param {*} id The id number of the new job
+   * @param {*} customerName Name of the customer
+   * @param {*} jobType The type of job
+   * @param {*} status Status of the job [Scheduled, Completed, Canceled]
+   * @param {*} appointmentDate The job's scheduled date in ISO format
+   * @param {*} technician The name of the technician assigned to the job
+   */
   function createJobCard(id, customerName, jobType, status, appointmentDate, technician) {
     let date = new Date(appointmentDate);
     let dateTime = date.toLocaleString();
@@ -166,6 +211,15 @@
       </div>`;
   }
 
+  /**
+   * Updates a job card in the job list with the latest information.
+   * @param {*} id The id number of the new job
+   * @param {*} customerName Name of the customer
+   * @param {*} jobType The type of job
+   * @param {*} status Status of the job [Scheduled, Completed, Canceled]
+   * @param {*} appointmentDate The job's scheduled date in ISO format
+   * @param {*} technician The name of the technician assigned to the job
+   */
   function updateJobCard(id, customerName, jobType, status, appointmentDate, technician) {
     let date = new Date(appointmentDate);
     let dateTime = date.toLocaleString();
@@ -182,6 +236,9 @@
     statusEl.classList.add(`bg-${statusColour[status]}`);
   }
 
+  /**
+   * Appends an 'Add Job' button to the end of the job list.
+   */
   function appendAddJobButton() {
     let addBtn = document.getElementById('addJobBtn');
     if (addBtn) {
@@ -197,89 +254,6 @@
         </div>
       </div>`;
   }
-
-  /*====================== LISTENER FUNCTIONS ====================*/
-
-  window.addJobOperation = () => {
-    document.getElementById('jobOperation').innerHTML = "Add";
-
-    document.getElementById('jobId').value = "";
-    document.getElementById('customerName').value = "";
-    document.getElementById('jobType').value = "";
-    document.getElementById('status').value = "";
-    document.getElementById('technician').value = "";
-
-    // clear datepicker
-    dtp.clear();
-
-    // hide delete button
-    document.getElementById('deleteJobBtn').classList.add('d-none');
-    document.getElementById('deleteJobBtn').removeAttribute('onclick');
-
-    document.getElementById('customerName').focus();
-  }
-
-  window.updateJobOperation = (id) => {
-    dbFetchJob(id);
-  }
-
-  window.addOrUpdateJob = (event) => {
-    event.preventDefault();
-
-    let id = parseInt(event.target.jobId.value);
-    let customerName = event.target.customerName.value;
-    let jobType = event.target.jobType.value;
-    let status = event.target.status.value;
-    let appointmentDate = event.target.appointmentDate.value;
-    let technician = event.target.technician.value;
-
-    // Validations
-    if (!customerName) {
-      alertMessage('messageArea', 'Please enter a customer name.', 'danger');
-      return;
-    }
-    else if (!jobType) {
-      alertMessage('messageArea', 'Please enter a job type.', 'danger');
-      return;
-    }
-    else if (!status) {
-      alertMessage('messageArea', 'Please select a status.', 'danger');
-      return;
-    }
-    else if (!appointmentDate) {
-      alertMessage('messageArea', 'Please select an appointment date.', 'danger');
-      return;
-    }
-    else if (!technician) {
-      alertMessage('messageArea', 'Please assign a technician.', 'danger');
-      return;
-    }
-
-    // parse date
-    let date = new Date(appointmentDate);
-    let dateSplit = date.toISOString().split('.');
-    let dateTime = dateSplit[0] + 'Z';
-
-    id > 0
-      ? dbUpdateJob(id, customerName, jobType, status, dateTime, technician)
-      : dbAddJob(customerName, jobType, status, dateTime, technician);
-  }
-
-  window.showDeleteModal = (event, id, name, dateTime) => {
-    event.preventDefault();
-
-    document.getElementById('deleteModal').setAttribute('data-id', id);
-    document.getElementById('deleteTechnicianName').innerHTML = name;
-    document.getElementById('deleteDateTime').innerHTML = dateTime;
-
-    var modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('deleteModal'));
-    modal.show();
-  }
-
-  window.deleteJob = () => {
-    let id = document.getElementById('deleteModal').getAttribute('data-id');
-    dbDeleteJob(id);
-  };
 
   /*====================== DISPLAY FUNCTIONS =====================*/
 
@@ -308,6 +282,113 @@
       setTimeout(() => {
         document.getElementById(id).innerHTML = "<br>";
       }, parseInt(timer) * 1000);
+    }
+  }
+
+  /*====================== LISTENER FUNCTIONS ====================*/
+
+  return {
+    /**
+     * Sets the form to "Add Job" mode.
+     */
+    addJobOperation: () => {
+      document.getElementById('jobOperation').innerHTML = "Add";
+
+      document.getElementById('jobId').value = "";
+      document.getElementById('customerName').value = "";
+      document.getElementById('jobType').value = "";
+      document.getElementById('status').value = "";
+      document.getElementById('technician').value = "";
+
+      // clear datepicker
+      dtp.clear();
+
+      // hide delete button
+      document.getElementById('deleteJobBtn').classList.add('d-none');
+      document.getElementById('deleteJobBtn').removeAttribute('onclick');
+
+      document.getElementById('customerName').focus();
+    },
+
+    /**
+     * Sets the form to "Update Job" mode.
+     * @param {*} id The id of the job
+     */
+    updateJobOperation: (id) => {
+      dbFetchJob(id);
+    },
+
+    /**
+     * The form's Save button listener which determines whether it's an add or update job operation.
+     * @param {*} event The form's event
+     * @returns Validation error message
+     */
+    addOrUpdateJob: (event) => {
+      event.preventDefault();
+
+      let id = parseInt(event.target.jobId.value);
+      let customerName = event.target.customerName.value;
+      let jobType = event.target.jobType.value;
+      let status = event.target.status.value;
+      let appointmentDate = event.target.appointmentDate.value;
+      let technician = event.target.technician.value;
+
+      // Validations
+      if (!customerName) {
+        alertMessage('messageArea', 'Please enter a customer name.', 'danger');
+        return;
+      }
+      else if (!jobType) {
+        alertMessage('messageArea', 'Please enter a job type.', 'danger');
+        return;
+      }
+      else if (!status) {
+        alertMessage('messageArea', 'Please select a status.', 'danger');
+        return;
+      }
+      else if (!appointmentDate) {
+        alertMessage('messageArea', 'Please select an appointment date.', 'danger');
+        return;
+      }
+      else if (!technician) {
+        alertMessage('messageArea', 'Please assign a technician.', 'danger');
+        return;
+      }
+
+      // parse date
+      let date = new Date(appointmentDate);
+      let dateSplit = date.toISOString().split('.');
+      let dateTime = dateSplit[0] + 'Z';
+
+      id > 0
+        ? dbUpdateJob(id, customerName, jobType, status, dateTime, technician)
+        : dbAddJob(customerName, jobType, status, dateTime, technician);
+    },
+
+    /**
+     * Display the job deletion modal.
+     * @param {*} event The form's event
+     * @param {*} id The id of the job
+     * @param {*} name The name of the job
+     * @param {*} dateTime The jobs appointment date/time
+     */
+    showDeleteModal: (event, id, name, dateTime) => {
+      event.preventDefault();
+
+      document.getElementById('deleteModal').setAttribute('data-id', id);
+      document.getElementById('deleteTechnicianName').innerHTML = name;
+      document.getElementById('deleteDateTime').innerHTML = dateTime;
+
+      var modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('deleteModal'));
+      modal.show();
+    },
+
+    /**
+     * Listener for the delete button in the delete job modal.
+     */
+    deleteJob: () => {
+      let id = document.getElementById('deleteModal').getAttribute('data-id');
+      dbDeleteJob(id);
     }
   }
 })();
