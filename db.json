@@ -9,7 +9,7 @@
       "technician": "Jane Smith"
     },
     {
-      "id": 2,
+      "id": "2",
       "customerName": "Alice Johnson",
       "jobType": "Electrical",
       "status": "Completed",
@@ -28,7 +28,7 @@
       "id": "4",
       "customerName": "Archimedes M. Porter",
       "jobType": "Exploration",
-      "status": "Completed",
+      "status": "Canceled",
       "appointmentDate": "2024-06-07T22:00:00Z",
       "technician": "Clayton Jones"
     },
