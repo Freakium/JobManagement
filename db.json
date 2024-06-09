@@ -9,6 +9,14 @@
       "technician": "Jane Smith"
     },
     {
+      "id": 2,
+      "customerName": "Alice Johnson",
+      "jobType": "Electrical",
+      "status": "Completed",
+      "appointmentDate": "2024-05-20T14:00:00Z",
+      "technician": "Bob Brown"
+    },
+    {
       "id": "3",
       "customerName": "Ezra Bridger",
       "jobType": "Training",
