@@ -1,0 +1,17 @@
+{
+  "name": "jobmanagement",
+  "version": "1.0.0",
+  "description": "A job management dashboard using REST.",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx json-server --watch db.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "json-server": "^1.0.0-beta.1"
+  }
+}

@@ -1,0 +1,11 @@
+#addJobBtn button {
+  font-size: 4rem;
+}
+
+#job-list .card {
+  min-height: 221px;
+}
+
+#messageArea {
+  min-height: 42px;
+}

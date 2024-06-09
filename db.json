@@ -1,0 +1,52 @@
+{
+  "jobs": [
+    {
+      "id": "1",
+      "customerName": "John Doe",
+      "jobType": "Plumbing",
+      "status": "Scheduled",
+      "appointmentDate": "2024-06-15T09:00:00Z",
+      "technician": "Jane Smith"
+    },
+    {
+      "id": "2",
+      "customerName": "Alice Johnson",
+      "jobType": "Electrical",
+      "status": "Completed",
+      "appointmentDate": "2024-05-20T14:00:00Z",
+      "technician": "Bob Brown"
+    },
+    {
+      "id": "3",
+      "customerName": "Ezra Bridger",
+      "jobType": "Training",
+      "status": "Scheduled",
+      "appointmentDate": "2024-06-28T22:00:00Z",
+      "technician": "Darth Maul"
+    },
+    {
+      "id": "4",
+      "customerName": "Archimedes M. Porter",
+      "jobType": "Exploration",
+      "status": "Completed",
+      "appointmentDate": "2024-06-07T22:00:00Z",
+      "technician": "Clayton Jones"
+    },
+    {
+      "id": "5",
+      "customerName": "Abraham Simpson",
+      "jobType": "Cleaning",
+      "status": "Scheduled",
+      "appointmentDate": "2024-06-28T14:00:00Z",
+      "technician": "Groundskeeper Willie"
+    },
+    {
+      "id": "6",
+      "customerName": "Aang",
+      "jobType": "Training",
+      "status": "Scheduled",
+      "appointmentDate": "2024-06-21T14:00:00Z",
+      "technician": "Katara"
+    }
+  ]
+}
