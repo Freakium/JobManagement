@@ -4,7 +4,7 @@ A job management dashboard using REST.
 # Setup
 - Use `npm install` to get the necessary dependencies.
 - To run the project, use `npm run start`
-- Open the `index.html` file in a browser.
+- Navigate to `localhost:3000` file in a browser.
 
 # API Documentation
 Located in `src/api.js`, this file includes functions to manipulate the `db.json` file. All functions return a Promise so to handle them properly, an async function is needed.
